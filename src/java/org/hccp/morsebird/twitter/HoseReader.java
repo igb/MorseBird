@@ -8,7 +8,11 @@ import com.twitter.hbc.core.processor.StringDelimitedProcessor;
 import com.twitter.hbc.httpclient.BasicClient;
 import com.twitter.hbc.httpclient.auth.Authentication;
 import com.twitter.hbc.httpclient.auth.OAuth1;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 
+import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -56,15 +60,32 @@ public class HoseReader {
             }
 
             String msg = queue.poll(5, TimeUnit.SECONDS);
+
             if (msg == null) {
                 System.out.println("Did not receive a message in 5 seconds");
             } else {
-                System.out.println(msg);
+
+                org.json.simple.JSONObject parsedMessage= (JSONObject) JSONValue.parse(msg);
+                String text = (String) parsedMessage.get("text");
+                if (text != null) {
+                    JSONObject entities = (JSONObject)parsedMessage.get("entities");
+                    JSONArray symbols = (JSONArray) entities.get("symbols");
+                    JSONArray urls = (JSONArray) entities.get("urls");
+                    System.out.println("\n");
+
+                    if (urls.size() == 0) {
+                        System.out.println(text);
+                    }
+                }
             }
         }
 
 
 
 
+    }
+
+    public static boolean isMorseEncodeable(String message) {
+        Set morseChars = [];
     }
 }
