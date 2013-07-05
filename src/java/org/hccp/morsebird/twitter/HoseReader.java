@@ -84,13 +84,13 @@ public class HoseReader {
                     JSONArray urls = (JSONArray) entities.get("urls");
 
                     if (urls.size() == 0 && encoder.isEncodeable(text) && lang.equals("en") && !isReply) {
-                        System.out.println(text);
+                       // System.out.println(text);
                         List<List<Code>> encoded = encoder.encode(text);
                         for (int i = 0; i < encoded.size(); i++) {
                             List<Code> word = encoded.get(i);
                             for (int j = 0; j < word.size(); j++) {
                                 Code code = word.get(j);
-                                System.out.print(code.toString());
+                                System.out.print(code.getValue());
                             }
                             tg.generateToneForWord(word);
                             System.out.print(" ");

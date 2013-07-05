@@ -12,6 +12,7 @@ public class Code {
 
     public static final int DOT=1;
     public static final int DASH=0;
+    private char value = ' ';
 
     private int[] sequence;
 
@@ -19,8 +20,17 @@ public class Code {
         this.sequence=sequence;
     }
 
+    public Code(int[] sequence, char value){
+        this.sequence=sequence;
+        this.value=value;
+    }
+
     public int[] getSequence() {
         return sequence;
+    }
+
+    public char getValue(){
+        return value;
     }
 
     @Override

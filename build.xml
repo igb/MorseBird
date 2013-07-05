@@ -1,0 +1,26 @@
+<project>
+    <property file="project.properties"/>
+
+    <path id="classpath">
+    <fileset dir="${lib.dir}/">
+        <include name="*.jar"/>
+    </fileset>
+    </path>
+
+<target name="init">
+    <mkdir dir="${dist.dir}"/>
+</target>
+
+<target name="clean">
+    <delete dir="${dist.dir}"/>
+</target>
+
+
+<target name="compile" depends="init">
+    <javac srcdir="${src.dir}" destdir="${dist.dir}">
+        <classpath refid="classpath"/>
+    </javac>
+</target>
+
+
+</project>
