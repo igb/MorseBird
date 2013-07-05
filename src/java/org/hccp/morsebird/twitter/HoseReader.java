@@ -8,11 +8,15 @@ import com.twitter.hbc.core.processor.StringDelimitedProcessor;
 import com.twitter.hbc.httpclient.BasicClient;
 import com.twitter.hbc.httpclient.auth.Authentication;
 import com.twitter.hbc.httpclient.auth.OAuth1;
+import org.hccp.morsebird.morse.Code;
 import org.hccp.morsebird.morse.Encoder;
+import org.hccp.morsebird.morse.ToneGenerator;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
+import javax.sound.sampled.LineUnavailableException;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -20,8 +24,11 @@ import java.util.concurrent.TimeUnit;
 
 public class HoseReader {
 
-    public static void main(String[] args) throws InterruptedException {
-        
+    public static void main(String[] args) throws InterruptedException, LineUnavailableException {
+
+        Encoder encoder = new Encoder();
+        ToneGenerator tg = new ToneGenerator();
+
         String consumerKey = args[0];
         String consumerSecret = args[1];
         String token = args[2];
@@ -68,14 +75,29 @@ public class HoseReader {
 
                 org.json.simple.JSONObject parsedMessage= (JSONObject) JSONValue.parse(msg);
                 String text = (String) parsedMessage.get("text");
+                String lang = (String) parsedMessage.get("lang");
+                boolean isReply = parsedMessage.get("in_reply_to_status_id") != null;
+
+
                 if (text != null) {
                     JSONObject entities = (JSONObject)parsedMessage.get("entities");
-                    JSONArray symbols = (JSONArray) entities.get("symbols");
                     JSONArray urls = (JSONArray) entities.get("urls");
-                    System.out.println("\n");
 
-                    if (urls.size() == 0) {
+                    if (urls.size() == 0 && encoder.isEncodeable(text) && lang.equals("en") && !isReply) {
                         System.out.println(text);
+                        List<List<Code>> encoded = encoder.encode(text);
+                        for (int i = 0; i < encoded.size(); i++) {
+                            List<Code> word = encoded.get(i);
+                            for (int j = 0; j < word.size(); j++) {
+                                Code code = word.get(j);
+                                System.out.print(code.toString());
+                            }
+                            tg.generateToneForWord(word);
+                            System.out.print(" ");
+                        }
+                        tg.mediumGap();
+                        tg.mediumGap();
+                        System.out.println();
                     }
                 }
             }

@@ -9,6 +9,7 @@ package org.hccp.morsebird.morse;
  */
 public class Code {
 
+
     public static final int DOT=1;
     public static final int DASH=0;
 
@@ -16,6 +17,10 @@ public class Code {
 
     public Code(int[] sequence){
         this.sequence=sequence;
+    }
+
+    public int[] getSequence() {
+        return sequence;
     }
 
     @Override
