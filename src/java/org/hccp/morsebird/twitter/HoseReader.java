@@ -8,6 +8,7 @@ import com.twitter.hbc.core.processor.StringDelimitedProcessor;
 import com.twitter.hbc.httpclient.BasicClient;
 import com.twitter.hbc.httpclient.auth.Authentication;
 import com.twitter.hbc.httpclient.auth.OAuth1;
+import org.hccp.morsebird.morse.Encoder;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
@@ -20,7 +21,7 @@ import java.util.concurrent.TimeUnit;
 public class HoseReader {
 
     public static void main(String[] args) throws InterruptedException {
-
+        
         String consumerKey = args[0];
         String consumerSecret = args[1];
         String token = args[2];
@@ -85,7 +86,5 @@ public class HoseReader {
 
     }
 
-    public static boolean isMorseEncodeable(String message) {
-        Set morseChars = [];
-    }
+
 }

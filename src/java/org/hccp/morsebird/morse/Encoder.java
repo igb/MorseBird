@@ -1,8 +1,6 @@
 package org.hccp.morsebird.morse;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -83,22 +81,50 @@ public class Encoder {
     }
 
     public Code encode(char character) {
-        return (Code)conversionTable.get(character);
+        char upperCased = Character.toUpperCase(character);
+        return (Code)conversionTable.get(upperCased);
+    }
+
+    public List<List<Code>> encode(String message) {
+
+        List<List<Code>> wordsList = new LinkedList<List<Code>>();
+
+        String[] words = message.split(" ");
+
+        for (int j = 0; j < words.length; j++) {
+            String word = words[j];
+            List<Code> wordList = new LinkedList<Code>();
+            char[] chars = word.toCharArray();
+            for (int i = 0; i < chars.length; i++) {
+                char aChar = chars[i];
+                Code encodedChar = encode(aChar);
+                wordList.add(encodedChar);
+            }
+            wordsList.add(wordList);
+        }
+        return wordsList;
+
     }
 
     public boolean isEncodeable(char character) {
-        return validChars.contains(character);
+        char upperCased = Character.toUpperCase(character);
+        return validChars.contains(upperCased);
     }
 
     public boolean isEncodeable(String message) {
-        char[] chars = message.toCharArray();
-        for (int i = 0; i < chars.length; i++) {
-            char aChar = chars[i];
-            if (!isEncodeable(aChar)) {
-                return false;
-            }
+        String[] words = message.split(" ");
+        for (int j = 0; j < words.length; j++) {
+            String word = words[j];
+            char[] chars = word.toCharArray();
+            for (int i = 0; i < chars.length; i++) {
+                char aChar = chars[i];
+                if (!isEncodeable(aChar)) {
+                    return false;
+                }
 
+            }
         }
+
         return true;
 
     }
