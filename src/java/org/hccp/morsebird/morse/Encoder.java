@@ -3,11 +3,7 @@ package org.hccp.morsebird.morse;
 import java.util.*;
 
 /**
- * Created with IntelliJ IDEA.
- * User: ibrown
- * Date: 7/4/13
- * Time: 9:57 AM
- * To change this template use File | Settings | File Templates.
+ * Fancy way of saying a map.
  */
 public class Encoder {
     private Map conversionTable;

@@ -1,11 +1,7 @@
 package org.hccp.morsebird.morse;
 
 /**
- * Created with IntelliJ IDEA.
- * User: ibrown
- * Date: 7/4/13
- * Time: 10:13 AM
- * To change this template use File | Settings | File Templates.
+ * Uh, a morse code.
  */
 public class Code {
 

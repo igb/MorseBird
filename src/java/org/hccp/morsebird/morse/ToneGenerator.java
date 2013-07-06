@@ -7,6 +7,9 @@ import javax.sound.sampled.SourceDataLine;
 import java.util.List;
 
 /**
+ *
+ * Beeeep. Beep. Beeeeeeeeeeeeeeeeeeep.
+ *
  * http://stackoverflow.com/questions/1932490/java-generating-sound
  */
 public class ToneGenerator {
