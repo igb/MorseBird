@@ -7,20 +7,31 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import javax.sound.sampled.LineUnavailableException;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+
 import java.util.List;
-import java.util.Locale;
 
 /**
- * Streams tweets from the public Sample Stream, filters and converts Morse-code encodeable tweets and converts to audio signal.
+ * ···–·–···–––··· –·––··–··· ··–··–·––––– –····· ·––···––····–····–·–· ····–––·––··–···
+ * ···–·–···–––––··–– ··–····–··–··–···· ·––·–·· –·–·––––····–··–·–··· –––––·–·····–····––·–·––––···
+ * ·–·–·–·––––····––····–··· –·––··–··· ·––·–·· –·–·––––····–··–·–··· –––– ·–··––····––– ·····––·–··–·–···–·–·–
  */
 
 public class MorseBird {
 
+   
+
+
+
+    public static final String TEXT = "text";
+    public static final String LANG = "lang";
+    public static final String IN_REPLY_TO_STATUS_ID = "in_reply_to_status_id";
+    public static final String EN = "en";
+
     public static void main(String[] args) throws InterruptedException, ParseException, LineUnavailableException {
+
+
+
 
         String consumerKey = args[0];
         String consumerSecret = args[1];
@@ -34,17 +45,11 @@ public class MorseBird {
         while (true) {
              JSONObject msg = hoser.getMessage();
 
-            String text = (String) msg.get("text");
-            String lang = (String) msg.get("lang");
-            String createdAt = (String) msg.get("created_at");
-            if (createdAt != null) {
-                System.out.println("createdAt = " + createdAt);
+            String text = (String) msg.get(TEXT);
+            String lang = (String) msg.get(LANG);
 
-                DateFormat df = new SimpleDateFormat("EEE MMM dd kk:mm:ss z yyyy", Locale.ENGLISH);
-                Date result = df.parse(createdAt);
-            }
 
-            boolean isReply = msg.get("in_reply_to_status_id") != null;
+            boolean isReply = msg.get(IN_REPLY_TO_STATUS_ID) != null;
 
 
             if (text != null) {
@@ -52,14 +57,14 @@ public class MorseBird {
                 JSONObject entities = (JSONObject) msg.get("entities");
                 JSONArray urls = (JSONArray) entities.get("urls");
 
-                if (urls.size() == 0 && encoder.isEncodeable(text) && lang.equals("en") && !isReply) {
-                    System.out.println("createdAt = " + createdAt);
+                if (urls.size() == 0 && encoder.isEncodeable(text) && lang.equals(EN) && !isReply) {
                     List<List<Code>> encoded = encoder.encode(text);
                     for (int i = 0; i < encoded.size(); i++) {
                         List<Code> word = encoded.get(i);
                         for (int j = 0; j < word.size(); j++) {
                             Code code = word.get(j);
                             System.out.print(code.getValue());
+
                             tg.generateToneForCode(code);
 
                         }

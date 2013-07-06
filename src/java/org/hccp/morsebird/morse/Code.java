@@ -1,7 +1,7 @@
 package org.hccp.morsebird.morse;
 
 /**
- * Uh, a morse code.
+ * –– ––– ·–· ··· ·
  */
 public class Code {
 
