@@ -8,9 +8,10 @@ import java.util.*;
 public class Encoder {
     private Map conversionTable;
     private Set validChars;
+    public static final String SPLIT = " ";
+    public static final String SPLIT_REGEX = SPLIT + "+";
 
     public Encoder() {
-
         conversionTable = new HashMap();
 
         conversionTable.put('A', new Code(new int[]{Code.DOT, Code.DASH}, 'A'));
@@ -39,7 +40,6 @@ public class Encoder {
         conversionTable.put('X', new Code(new int[]{Code.DASH, Code.DOT,Code.DOT,Code.DASH}, 'X'));
         conversionTable.put('Y', new Code(new int[]{Code.DASH, Code.DOT,Code.DASH,Code.DASH}, 'Y'));
         conversionTable.put('Z', new Code(new int[]{Code.DASH, Code.DASH,Code.DOT,Code.DOT}, 'Z'));
-
 
         conversionTable.put('0', new Code(new int[]{Code.DASH, Code.DASH,Code.DASH,Code.DASH,Code.DASH}, '0'));
         conversionTable.put('1', new Code(new int[]{Code.DOT, Code.DASH,Code.DASH,Code.DASH,Code.DASH},'1'));
@@ -72,8 +72,6 @@ public class Encoder {
         conversionTable.put('@', new Code(new int[]{Code.DOT, Code.DASH,Code.DASH,Code.DOT,Code.DASH, Code.DOT},'@'));
 
         validChars = conversionTable.keySet();
-
-
     }
 
     public Code encode(char character) {
@@ -85,7 +83,7 @@ public class Encoder {
 
         List<List<Code>> wordsList = new LinkedList<List<Code>>();
 
-        String[] words = message.split(" ");
+        String[] words = message.trim().split(SPLIT_REGEX);
 
         for (int j = 0; j < words.length; j++) {
             String word = words[j];
@@ -98,8 +96,8 @@ public class Encoder {
             }
             wordsList.add(wordList);
         }
-        return wordsList;
 
+        return wordsList;
     }
 
     public boolean isEncodeable(char character) {
@@ -108,7 +106,7 @@ public class Encoder {
     }
 
     public boolean isEncodeable(String message) {
-        String[] words = message.split(" ");
+        String[] words = message.trim().split(SPLIT_REGEX);
         for (int j = 0; j < words.length; j++) {
             String word = words[j];
             char[] chars = word.toCharArray();
@@ -122,6 +120,5 @@ public class Encoder {
         }
 
         return true;
-
     }
 }
