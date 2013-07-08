@@ -13,6 +13,7 @@
 
 <target name="clean">
     <delete dir="${dist.dir}"/>
+    <delete dir="${rel.dir}"/>
 </target>
 
 
@@ -22,5 +23,17 @@
     </javac>
 </target>
 
+<target name="package" depends="compile">
+    <jar basedir="${dist.dir}" destfile="${dist.dir}/morsebird.jar"/>
+</target>
+
+<target name="release" depends="clean,package">
+    <mkdir dir="${rel.dir}/morsebird/lib/java/"/>
+    <copydir src="${lib.dir}" dest="${rel.dir}/morsebird/lib/java/"/>
+    <copyfile src="${dist.dir}/morsebird.jar" dest="${rel.dir}/morsebird/morsebird.jar"/>
+    <copyfile src="morsebird-public" dest="${rel.dir}/morsebird/morsebird"/>
+
+    <zip basedir="${rel.dir}/morsebird" file="${rel.dir}/morsebird.zip"/>
+</target>
 
 </project>
