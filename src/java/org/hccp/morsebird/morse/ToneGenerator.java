@@ -14,7 +14,7 @@ import java.util.List;
  */
 public class ToneGenerator {
 
-    public static final int UNIT = 50;
+    private int unit = 50;
 
     public static void main(String[] args) throws LineUnavailableException, InterruptedException {
         ToneGenerator tg = new ToneGenerator();
@@ -25,24 +25,32 @@ public class ToneGenerator {
 
     }
 
+    public ToneGenerator() {
+
+    }
+
+    public ToneGenerator(int unit) {
+        this.unit = unit;
+    }
+
     public void interElementGap() throws InterruptedException {
-        Thread.sleep(UNIT);
+        Thread.sleep(unit);
     }
 
     public void shortGap() throws InterruptedException {
-        Thread.sleep(3 * UNIT);
+        Thread.sleep(3 * unit);
     }
 
     public void mediumGap() throws InterruptedException {
-        Thread.sleep(7 * UNIT);
+        Thread.sleep(7 * unit);
     }
 
     public void generateDot() throws LineUnavailableException {
-        generateTone(UNIT);
+        generateTone(unit);
     }
 
     public void generateDash() throws LineUnavailableException {
-        generateTone(3 * UNIT);
+        generateTone(3 * unit);
     }
 
     public void generateToneForCode(Code code) throws LineUnavailableException, InterruptedException {

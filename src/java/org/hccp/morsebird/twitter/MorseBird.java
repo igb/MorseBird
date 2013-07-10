@@ -38,14 +38,19 @@ public class MorseBird {
     }
 
     public static void main(String[] args) throws InterruptedException, ParseException, LineUnavailableException {
+        int unit = 50;
+
         String consumerKey = args[0];
         String consumerSecret = args[1];
         String token = args[2];
         String tokenSecret = args[3];
+        if (args.length==5) {
+            unit = Integer.parseInt(args[4]);
+        }
 
         HoseReader hoser = new HoseReader(consumerKey, consumerSecret, token, tokenSecret);
         Encoder encoder = new Encoder();
-        ToneGenerator tg = new ToneGenerator();
+        ToneGenerator tg = new ToneGenerator(unit);
         MorseBird mb = new MorseBird();
 
         while (true) {
@@ -70,8 +75,8 @@ public class MorseBird {
                         List<Code> word = encoded.get(i);
                         for (int j = 0; j < word.size(); j++) {
                             Code code = word.get(j);
-                            System.out.print(code.getValue());
                             tg.generateToneForCode(code);
+                            System.out.print(code.getValue());
                         }
 
                         if (i < encoded.size()-1) {
