@@ -1,9 +1,6 @@
 package org.hccp.morsebird.morse;
 
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.SourceDataLine;
+import javax.sound.sampled.*;
 import java.util.List;
 
 /**
@@ -11,19 +8,23 @@ import java.util.List;
  * Beeeep. Beep. Beeeeeeeeeeeeeeeeeeep.
  *
  * http://stackoverflow.com/questions/1932490/java-generating-sound
+ * http://mindprod.com/jgloss/sound.html#SYNTHESISED
  */
 public class ToneGenerator {
 
-    private int unit = 50;
 
-    public static void main(String[] args) throws LineUnavailableException, InterruptedException {
-        ToneGenerator tg = new ToneGenerator();
+    public static void main ( String[] args ) throws LineUnavailableException, InterruptedException {
+                ToneGenerator tg = new ToneGenerator();
         tg.generateDash();
         tg.interElementGap();
         tg.generateDot();
-
-
     }
+
+
+
+    private int unit = 1000; // defaults to one second
+
+
 
     public ToneGenerator() {
 
@@ -77,20 +78,32 @@ public class ToneGenerator {
         mediumGap();
     }
 
-    public void generateTone(int duration) throws LineUnavailableException {
-        byte[] buf = new byte[1];
-        AudioFormat af = new AudioFormat((float) 44100, 8, 1, true, false);
-        SourceDataLine sdl = AudioSystem.getSourceDataLine(af);
-        sdl.open(af);
-        sdl.start();
-        for (int i = 0; i < duration * (float) 44100 / 1000; i++) {
-            double angle = i / ((float) 44100 / 440) * 2.0 * Math.PI;
-            buf[0] = (byte) (Math.sin(angle) * 100);
-            sdl.write(buf, 0, 1);
+    /**
+     * Generate a tone.
+     * @param duration_in_millis duration of tone in milliseconds
+     * @throws LineUnavailableException
+     */
+    public void generateTone(int duration_in_millis) throws LineUnavailableException {
+        double duration = 0.001 * duration_in_millis;
+        int sampleRate = 8000;
+        double frequency = 1000.0;
+        double RAD = 2.0 * Math.PI;
+
+        AudioFormat af = new AudioFormat((float) sampleRate, 16, 1, true, true);
+        DataLine.Info info = new DataLine.Info(SourceDataLine.class, af);
+        SourceDataLine source = (SourceDataLine) AudioSystem.getLine(info);
+        source.open(af);
+        source.start();
+        byte[] buf = new byte[(int) Math.round(sampleRate * duration)];
+        for (int i = 0; i < buf.length; i++) {
+            buf[i] =(byte) (Math.sin(RAD * frequency / sampleRate * i) * 127.0);
         }
-        sdl.drain();
-        sdl.stop();
-        sdl.close();
+
+        source.write(buf, 0, buf.length);
+        source.drain();
+        source.stop();
+        source.close();
+
     }
 
 }

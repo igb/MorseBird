@@ -48,7 +48,7 @@ public class HoseReader {
             System.out.println("Client connection closed unexpectedly: " + client.getExitEvent().getMessage());
         }
 
-        String msg = tweetQueue.poll(5, TimeUnit.SECONDS);
+        String msg = tweetQueue.poll(30, TimeUnit.SECONDS);
 
         if (msg == null) {
             System.out.println("Did not receive a message in 5 seconds");

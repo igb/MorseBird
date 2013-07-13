@@ -38,7 +38,11 @@ public class MorseBird {
     }
 
     public static void main(String[] args) throws InterruptedException, ParseException, LineUnavailableException {
-        int unit = 50;
+        for (int i = 0; i < args.length; i++) {
+            String arg = args[i];
+            System.out.println("arg = " + arg);
+        }
+        int unit = 500;
 
         String consumerKey = args[0];
         String consumerSecret = args[1];
@@ -52,7 +56,7 @@ public class MorseBird {
         Encoder encoder = new Encoder();
         ToneGenerator tg = new ToneGenerator(unit);
         MorseBird mb = new MorseBird();
-
+        System.out.println("objects created...");
         while (true) {
             JSONObject msg = hoser.getMessage();
 
