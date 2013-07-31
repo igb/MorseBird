@@ -1,15 +1,15 @@
 package org.hccp.morsebird.twitter;
 
 import org.apache.commons.lang.StringUtils;
-import org.hccp.morsebird.morse.Code;
-import org.hccp.morsebird.morse.Encoder;
-import org.hccp.morsebird.morse.ToneGenerator;
+import org.hccp.morsebird.morse.*;
+import org.hccp.morsebird.rpi.LedController;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import javax.sound.sampled.LineUnavailableException;
 import java.text.ParseException;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -54,7 +54,16 @@ public class MorseBird {
 
         HoseReader hoser = new HoseReader(consumerKey, consumerSecret, token, tokenSecret);
         Encoder encoder = new Encoder();
+
         ToneGenerator tg = new ToneGenerator(unit);
+        LedController ledController = new LedController();
+        ledController.setUnitInMillis(unit);
+
+        List<SignalController> controllers = new LinkedList<SignalController>();
+        controllers.add(ledController);
+        controllers.add(tg);
+
+
         MorseBird mb = new MorseBird();
         System.out.println("objects created...");
         while (true) {
@@ -75,26 +84,73 @@ public class MorseBird {
                     mb.removeUrls(media, sb);
 
                     List<List<Code>> encoded = encoder.encode(sb.toString());
-                    for (int i = 0; i < encoded.size(); i++) {
-                        List<Code> word = encoded.get(i);
-                        for (int j = 0; j < word.size(); j++) {
-                            Code code = word.get(j);
-                            tg.generateToneForCode(code);
-                            System.out.print(code.getValue());
-                        }
-
-                        if (i < encoded.size()-1) {
-                            tg.shortGap();
-                            System.out.print(" ");
-                        }
-                    }
-
-                    tg.mediumGap();
-                    tg.mediumGap();
-                    System.out.print("\n\n");
+                    generateSignals(controllers, encoded);
                     hoser.advanceToLatest();
                 }
             }
         }
     }
+
+    public static void generateSignals(List<SignalController> controllers, List<List<Code>> encoded) throws InterruptedException {
+        for (int i = 0; i < encoded.size(); i++) {
+            List<Code> word = encoded.get(i);
+            for (int j = 0; j < word.size(); j++) {
+                Code code = word.get(j);
+                generateSignals(controllers, code);
+                System.out.print(code.getValue());
+                if (j < word.size() - 1) {
+                    generateSignal(controllers, Signal.SHORT_GAP);
+                }
+            }
+            if (i < (encoded.size() - 1) ) {
+                System.out.print(" ");
+                generateSignal(controllers, Signal.MEDIUM_GAP);
+
+            }
+        }
+
+        System.out.print("\n\n");
+        generateSignal(controllers, Signal.MEDIUM_GAP);
+        generateSignal(controllers, Signal.MEDIUM_GAP);
+
+
+    }
+
+    private static void generateSignals(List<SignalController> controllers, Code code) throws InterruptedException {
+
+            int[] sequence = code.getSequence();
+            for (int j = 0; j < sequence.length; j++) {
+                int element = sequence[j];
+                if (element == Code.DASH) {
+                   generateSignal(controllers, Signal.DASH);
+                } else if (element == Code.DOT){
+                   generateSignal(controllers, Signal.DOT);
+                }
+
+                if (j < sequence.length - 1) {
+                    generateSignal(controllers, Signal.INTRA_CHARACTER_GAP);
+                }
+            }
+
+    }
+
+    private static void generateSignal(List<SignalController> controllers, Signal signal) throws InterruptedException {
+        List<Thread> threads = new LinkedList<Thread>();
+
+        for (int i = 0; i < controllers.size(); i++) {
+            SignalController signalController = controllers.get(i);
+            SignalExecutor executor = new SignalExecutor(signalController, signal);
+            threads.add(new Thread(executor));
+        }
+        for (int i = 0; i < threads.size(); i++) {
+            Thread thread = threads.get(i);
+            thread.start();
+        }
+        for (int i = 0; i < threads.size(); i++) {
+            Thread thread = threads.get(i);
+            thread.join();
+        }
+
+    }
+
 }

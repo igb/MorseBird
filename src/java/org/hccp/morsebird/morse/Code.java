@@ -4,8 +4,9 @@ package org.hccp.morsebird.morse;
  * –– ––– ·–· ··· ·
  */
 public class Code {
-    public static final int DOT = 1;
-    public static final int DASH = 0;
+
+    public static final int DOT = Signal.DOT.getValue();
+    public static final int DASH = Signal.DASH.getValue();
     private char value = ' ';
 
     private int[] sequence;

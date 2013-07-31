@@ -10,7 +10,7 @@ import java.util.List;
  * http://stackoverflow.com/questions/1932490/java-generating-sound
  * http://mindprod.com/jgloss/sound.html#SYNTHESISED
  */
-public class ToneGenerator {
+public class ToneGenerator implements SignalController {
 
 
     public static void main ( String[] args ) throws LineUnavailableException, InterruptedException {
@@ -35,6 +35,34 @@ public class ToneGenerator {
     }
 
     public void interElementGap() throws InterruptedException {
+        Thread.sleep(unit);
+    }
+
+    @Override
+    public void setUnitInMillis(int unitInMillis) {
+        this.unit=unitInMillis;
+    }
+
+    @Override
+    public void dash() {
+        try {
+            generateDash();
+        } catch (LineUnavailableException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void dot() {
+        try {
+            generateDot();
+        } catch (LineUnavailableException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void intraCharacterGap() throws InterruptedException {
         Thread.sleep(unit);
     }
 
