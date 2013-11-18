@@ -2,11 +2,13 @@ package org.hccp.morsebird.twitter;
 
 import org.apache.commons.lang.StringUtils;
 import org.hccp.morsebird.morse.*;
+import org.hccp.morsebird.rpi.BuzzerController;
 import org.hccp.morsebird.rpi.LedController;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import javax.sound.sampled.LineUnavailableException;
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -37,12 +39,12 @@ public class MorseBird {
         }
     }
 
-    public static void main(String[] args) throws InterruptedException, ParseException, LineUnavailableException {
+    public static void main(String[] args) throws InterruptedException, ParseException, LineUnavailableException, IOException {
         for (int i = 0; i < args.length; i++) {
             String arg = args[i];
             System.out.println("arg = " + arg);
         }
-        int unit = 500;
+        int unit = 100; //500;
 
         String consumerKey = args[0];
         String consumerSecret = args[1];
@@ -56,12 +58,17 @@ public class MorseBird {
         Encoder encoder = new Encoder();
 
         ToneGenerator tg = new ToneGenerator(unit);
+
         LedController ledController = new LedController();
         ledController.setUnitInMillis(unit);
+
+        BuzzerController buzzerController = new BuzzerController();
+        buzzerController.setUnitInMillis(unit);
 
         List<SignalController> controllers = new LinkedList<SignalController>();
         controllers.add(ledController);
         controllers.add(tg);
+        controllers.add(buzzerController);
 
 
         MorseBird mb = new MorseBird();

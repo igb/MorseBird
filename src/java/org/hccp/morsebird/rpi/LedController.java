@@ -1,7 +1,6 @@
 package org.hccp.morsebird.rpi;
 
 import com.pi4j.io.gpio.*;
-import org.hccp.morsebird.morse.SignalController;
 
 /**
  * Created with IntelliJ IDEA.
@@ -10,18 +9,17 @@ import org.hccp.morsebird.morse.SignalController;
  * Time: 3:00 PM
  * To change this template use File | Settings | File Templates.
  */
-public class LedController  implements SignalController{
+public class LedController  extends AbstractSignalController {
 
     private GpioController gpio;
     private GpioPinDigitalOutput pin;
-    private int unitInMillis;
 
     /**
      * Defaults to RaspiPin.GPIO_01
      */
     public LedController() {
         gpio = GpioFactory.getInstance();
-        pin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_01, "MyLED", PinState.LOW);
+        pin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_04, "MyLED", PinState.LOW);
     }
 
     /**
@@ -34,11 +32,11 @@ public class LedController  implements SignalController{
     }
 
 
-    public void on() {
+    protected void on() {
         pin.high();
     }
 
-    public void off() {
+    protected void off() {
         pin.low();
     }
 
@@ -84,40 +82,6 @@ public class LedController  implements SignalController{
         gpio.shutdown();
 
 
-    }
-
-    @Override
-    public void setUnitInMillis(int unitInMillis) {
-        this.unitInMillis = unitInMillis;
-    }
-
-    @Override
-    public void dash() throws InterruptedException {
-        pin.high();
-        Thread.sleep(unitInMillis * 3);
-        pin.low();
-    }
-
-    @Override
-    public void dot() throws InterruptedException {
-        pin.high();
-        Thread.sleep(unitInMillis);
-        pin.low();
-    }
-
-    @Override
-    public void intraCharacterGap() throws InterruptedException {
-        Thread.sleep(unitInMillis);
-    }
-
-    @Override
-    public void shortGap() throws InterruptedException {
-        Thread.sleep(unitInMillis * 3);
-    }
-
-    @Override
-    public void mediumGap() throws InterruptedException {
-        Thread.sleep(unitInMillis * 7);
     }
 
 

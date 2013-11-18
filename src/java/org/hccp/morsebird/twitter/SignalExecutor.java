@@ -4,6 +4,8 @@ import org.hccp.morsebird.morse.Code;
 import org.hccp.morsebird.morse.Signal;
 import org.hccp.morsebird.morse.SignalController;
 
+import java.io.IOException;
+
 /**
  * Created with IntelliJ IDEA.
  * User: ibrown
@@ -38,6 +40,8 @@ public class SignalExecutor implements Runnable {
        }
       } catch (InterruptedException ie) {
           ie.printStackTrace();
+      } catch (IOException e) {
+          e.printStackTrace();
       }
 
     }

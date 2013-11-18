@@ -1,5 +1,7 @@
 package org.hccp.morsebird.morse;
 
+import java.io.IOException;
+
 /**
  * Created with IntelliJ IDEA.
  * User: ibrown
@@ -10,8 +12,8 @@ package org.hccp.morsebird.morse;
 public interface SignalController {
 
     public void setUnitInMillis(int unitInMillis);
-    public void dash() throws InterruptedException;
-    public void dot() throws InterruptedException;
+    public void dash() throws InterruptedException, IOException;
+    public void dot() throws InterruptedException, IOException;
     public void intraCharacterGap() throws InterruptedException;
     public void shortGap() throws InterruptedException;
     public void mediumGap() throws InterruptedException;
