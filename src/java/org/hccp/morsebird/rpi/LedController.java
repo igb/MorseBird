@@ -19,7 +19,7 @@ public class LedController  extends AbstractSignalController {
      */
     public LedController() {
         gpio = GpioFactory.getInstance();
-        pin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_04, "MyLED", PinState.LOW);
+        pin = gpio.provisionDigitalOutputPin(Pi4jUtility.getPi4jPin(properties.getProperty("led.pin")), "MyLED", PinState.LOW);
     }
 
     /**

@@ -1,8 +1,10 @@
 package org.hccp.morsebird.rpi;
 
 import org.hccp.morsebird.morse.SignalController;
+import org.hccp.morsebird.twitter.MorseBird;
 
 import java.io.IOException;
+import java.util.Properties;
 
 /**
  * Created with IntelliJ IDEA.
@@ -11,10 +13,11 @@ import java.io.IOException;
  * Time: 9:59 PM
  * To change this template use File | Settings | File Templates.
  */
-public abstract class AbstractSignalController implements SignalController {
+public abstract class AbstractSignalController extends PropertyBasedController implements SignalController {
 
 
     private int unitInMillis;
+
 
     @Override
     public void setUnitInMillis(int unitInMillis) {

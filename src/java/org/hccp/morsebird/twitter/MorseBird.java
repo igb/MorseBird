@@ -13,6 +13,7 @@ import java.text.ParseException;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * ···–·–···–––··· –·––··–··· ··–··–·––––– –····· ·––···––····–····–·–· ····–––·––··–···
@@ -40,16 +41,27 @@ public class MorseBird {
     }
 
     public static void main(String[] args) throws InterruptedException, ParseException, LineUnavailableException, IOException {
+
+        Properties props = new Properties();
+        props.load(MorseBird.class.getClassLoader().getResourceAsStream("morsebird.properties"));
+
         for (int i = 0; i < args.length; i++) {
             String arg = args[i];
             System.out.println("arg = " + arg);
         }
         int unit = 100; //500;
 
-        String consumerKey = args[0];
-        String consumerSecret = args[1];
-        String token = args[2];
-        String tokenSecret = args[3];
+        String consumerKey;
+        String consumerSecret;
+        String tokenSecret;
+        String token;
+
+
+        consumerKey = args[0];
+        consumerSecret = args[1];
+        token = args[2];
+
+        tokenSecret = args[3];
         if (args.length==5) {
             unit = Integer.parseInt(args[4]);
         }
