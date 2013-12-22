@@ -30,9 +30,6 @@ public class ToneGenerator implements SignalController {
 
     }
 
-    public ToneGenerator(int unit) {
-        this.unit = unit;
-    }
 
     public void interElementGap() throws InterruptedException {
         Thread.sleep(unit);

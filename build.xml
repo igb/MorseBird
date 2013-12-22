@@ -18,18 +18,21 @@
 
 
     <target name="compile" depends="init">
-        <javac srcdir="${src.dir}" destdir="${dist.dir}" debug="true" debuglevel="lines, vars, and source">
+        <javac srcdir="${src.dir}" destdir="${dist.dir}"  debug="true" debuglevel="lines,vars,source">
             <classpath refid="classpath"/>
         </javac>
     </target>
 
     <target name="package" depends="compile">
         <jar basedir="${dist.dir}" destfile="${dist.dir}/morsebird.jar"/>
+        <jar basedir="${props.dir}" includes="morsebird.properties" destfile="${dist.dir}/morsebird.jar" update="true"/>
     </target>
 
     <target name="release" depends="clean,package">
         <mkdir dir="${rel.dir}/morsebird/lib/java/"/>
+        <mkdir dir="${rel.dir}/morsebird/bin/python/"/>
         <copydir src="${lib.dir}" dest="${rel.dir}/morsebird/lib/java/"/>
+        <copydir src="${src.dir}/../python/" dest="${rel.dir}/morsebird/bin/python"/>
         <copyfile src="${dist.dir}/morsebird.jar" dest="${rel.dir}/morsebird/morsebird.jar"/>
         <copyfile src="morsebird-public" dest="${rel.dir}/morsebird/morsebird"/>
 

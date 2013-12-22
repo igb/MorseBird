@@ -17,7 +17,7 @@ public class LedController  extends AbstractSignalController {
     /**
      * Defaults to RaspiPin.GPIO_01
      */
-    public LedController() {
+    public LedController() throws  InterruptedException {
         gpio = GpioFactory.getInstance();
         pin = gpio.provisionDigitalOutputPin(Pi4jUtility.getPi4jPin(properties.getProperty("led.pin")), "MyLED", PinState.LOW);
     }

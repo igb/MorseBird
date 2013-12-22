@@ -4,10 +4,13 @@ import org.apache.commons.lang.StringUtils;
 import org.hccp.morsebird.morse.*;
 import org.hccp.morsebird.rpi.BuzzerController;
 import org.hccp.morsebird.rpi.LedController;
+import org.hccp.morsebird.rpi.RateController;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import javax.sound.sampled.LineUnavailableException;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.Iterator;
@@ -43,14 +46,21 @@ public class MorseBird {
     public static void main(String[] args) throws InterruptedException, ParseException, LineUnavailableException, IOException {
 
         Properties props = new Properties();
-        props.load(MorseBird.class.getClassLoader().getResourceAsStream("morsebird.properties"));
+
+        if (args.length==5) {
+            String properties = args[4];
+            props.load(new FileInputStream(new File(properties)));
+        } else {
+            props.load(MorseBird.class.getClassLoader().getResourceAsStream("morsebird.properties"));
+        }
+
+
 
         for (int i = 0; i < args.length; i++) {
             String arg = args[i];
             System.out.println("arg = " + arg);
         }
-        int unit = 100; //500;
-
+        int unit = Integer.parseInt(props.getProperty("unit"));
         String consumerKey;
         String consumerSecret;
         String tokenSecret;
@@ -62,30 +72,48 @@ public class MorseBird {
         token = args[2];
 
         tokenSecret = args[3];
-        if (args.length==5) {
-            unit = Integer.parseInt(args[4]);
+
+        final HoseReader hoser = new HoseReader(consumerKey, consumerSecret, token, tokenSecret);
+        final Encoder encoder = new Encoder();
+
+
+        final List<SignalController> controllers = new LinkedList<SignalController>();
+
+        String[] signalControllerClasses = props.getProperty("signalControllers").split(",");
+
+        for (int i = 0; i < signalControllerClasses.length; i++) {
+            String signalControllerClass = signalControllerClasses[i];
+            try {
+                SignalController controller = (SignalController) Class.forName(signalControllerClass).newInstance();
+                controller.setUnitInMillis(unit);
+                controllers.add(controller);
+            } catch (InstantiationException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
         }
 
-        HoseReader hoser = new HoseReader(consumerKey, consumerSecret, token, tokenSecret);
-        Encoder encoder = new Encoder();
 
-        ToneGenerator tg = new ToneGenerator(unit);
+        final MorseBird mb = new MorseBird();
+        //System.out.println("starting rate controller...");
 
-        LedController ledController = new LedController();
-        ledController.setUnitInMillis(unit);
+        RateController rateController = new RateController(unit);
+        rateController.setProperties(props);
+        rateController.setSignalControllers(controllers);
+        Thread rateControllerThread = new Thread(rateController);
+        rateControllerThread.setName("rate controller");
+        rateControllerThread.start();
 
-        BuzzerController buzzerController = new BuzzerController();
-        buzzerController.setUnitInMillis(unit);
+        //System.out.println("...started rate controller.");
+        //System.out.flush();
 
-        List<SignalController> controllers = new LinkedList<SignalController>();
-        controllers.add(ledController);
-        controllers.add(tg);
-        controllers.add(buzzerController);
+       Thread t = new Thread() { public void run() {
+         while (true) {
 
-
-        MorseBird mb = new MorseBird();
-        System.out.println("objects created...");
-        while (true) {
+             try {
             JSONObject msg = hoser.getMessage();
 
             String text = (String) msg.get(TEXT);
@@ -107,15 +135,25 @@ public class MorseBird {
                     hoser.advanceToLatest();
                 }
             }
-        }
-    }
 
-    public static void generateSignals(List<SignalController> controllers, List<List<Code>> encoded) throws InterruptedException {
+             }catch (InterruptedException ie) {
+                 ie.printStackTrace();
+             }
+       }
+       }
+       };
+        t.setName("morsebird driver");
+        t.start();
+       }
+
+           public static void generateSignals(List<SignalController> controllers, List<List<Code>> encoded) throws InterruptedException {
         for (int i = 0; i < encoded.size(); i++) {
             List<Code> word = encoded.get(i);
             for (int j = 0; j < word.size(); j++) {
+
                 Code code = word.get(j);
                 generateSignals(controllers, code);
+                Thread.sleep(0);
                 System.out.print(code.getValue());
                 if (j < word.size() - 1) {
                     generateSignal(controllers, Signal.SHORT_GAP);

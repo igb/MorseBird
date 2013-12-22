@@ -22,8 +22,8 @@ while True:
         pin_A_state=tmp_A_state
 
 
-        print "A: " + str(pin_A_state)
-        print "B: " + str(pin_B_state)
+        print "A " + str(pin_A_state)
+        print "B " + str(pin_B_state)
 
 
     if (tmp_B_state != pin_B_state):
@@ -31,6 +31,9 @@ while True:
         pin_B_state=tmp_B_state
 
 
-        print "A: " + str(pin_A_state)
-        print "B: " + str(pin_B_state)
+        print "A " + str(pin_A_state)
+        print "B " + str(pin_B_state)
+
+
+    sys.stdout.flush()
 

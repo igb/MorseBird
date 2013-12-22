@@ -5,13 +5,13 @@ import org.hccp.morsebird.morse.Encoder;
 import org.hccp.morsebird.morse.SignalController;
 import org.hccp.morsebird.morse.ToneGenerator;
 import org.hccp.morsebird.rpi.LedController;
+import org.hccp.morsebird.rpi.RateController;
 import org.hccp.morsebird.twitter.MorseBird;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * Created with IntelliJ IDEA.
@@ -25,28 +25,17 @@ public class TestUtility {
     public static void main(String[] args) throws InterruptedException, IOException {
         int unit=1000;
 
-        if (args.length > 0) {
-            unit = Integer.parseInt(args[0]);
-        }
-
-        ToneGenerator tg = new ToneGenerator(unit);
-        LedController ledController = new LedController();
-        ledController.setUnitInMillis(unit);
-
-        List<SignalController> controllers = new LinkedList<SignalController>();
-        controllers.add(ledController);
-        controllers.add(tg);
+        Properties props = new Properties();
 
 
+            props.load(new FileInputStream(new File("/Users/ibrown/Documents/morsebird/props/test.morsebird.properties")));
 
-        Encoder encoder = new Encoder();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-        while (true) {
-            String input = reader.readLine();
-            List<List<Code>> encoded = encoder.encode(input);
 
-            MorseBird.generateSignals(controllers, encoded);
-        }
+        RateController rateController = new RateController(unit);
+        rateController.setProperties(props);
+
+        Thread t = new Thread(rateController);
+        t.start();
 
     }
 }

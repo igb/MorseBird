@@ -21,6 +21,7 @@ public class HoseReader {
     public static final String MORSE_BIRD_V_1_0 = "MorseBird_v1_0";
     private BasicClient client;
     private BlockingQueue<String> tweetQueue;
+    private int timeout = 60;
 
     public HoseReader(String consumerKey, String consumerSecret, String token, String tokenSecret) {
         tweetQueue = new LinkedBlockingQueue<String>(10000);
@@ -48,10 +49,10 @@ public class HoseReader {
             System.out.println("Client connection closed unexpectedly: " + client.getExitEvent().getMessage());
         }
 
-        String msg = tweetQueue.poll(30, TimeUnit.SECONDS);
+        String msg = tweetQueue.poll(timeout, TimeUnit.SECONDS);
 
         if (msg == null) {
-            System.out.println("Did not receive a message in 5 seconds");
+            System.out.println("Did not receive a message in " + timeout + " seconds");
             return null;
         } else {
             return (JSONObject) JSONValue.parse(msg);

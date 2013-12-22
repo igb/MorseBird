@@ -1,6 +1,7 @@
 package org.hccp.morsebird.morse;
 
 import java.io.IOException;
+import java.util.Properties;
 
 /**
  * Created with IntelliJ IDEA.
