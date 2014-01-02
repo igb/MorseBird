@@ -93,7 +93,6 @@ public class RateController implements Runnable, Configurable {
                     } else {
                         if (unitInMilliseconds > 1) unitInMilliseconds--;
                     }
-                    System.out.println(unitInMilliseconds);
                     updateSignalControllers();
                     lastReadState=currentState;
 

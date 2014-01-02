@@ -16,7 +16,7 @@ import java.util.Properties;
 public abstract class AbstractSignalController extends PropertyBasedController implements SignalController {
 
 
-    private int unitInMillis;
+    protected int unitInMillis;
 
 
     @Override
@@ -47,6 +47,7 @@ public abstract class AbstractSignalController extends PropertyBasedController i
     @Override
     public void intraCharacterGap() throws InterruptedException {
         Thread.sleep(unitInMillis);
+
     }
 
     @Override

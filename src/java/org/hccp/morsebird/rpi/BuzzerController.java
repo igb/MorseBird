@@ -14,6 +14,8 @@ public class BuzzerController extends AbstractSignalController {
     private Runtime rt;
     private final int pin;
 
+
+
     public BuzzerController() throws IOException, InterruptedException {
         pin = Pi4jUtility.getPi4jPin(properties.getProperty("buzzer.pin")).getAddress();
 
