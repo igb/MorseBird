@@ -56,10 +56,7 @@ public class MorseBird {
 
 
 
-        for (int i = 0; i < args.length; i++) {
-            String arg = args[i];
-            System.out.println("arg = " + arg);
-        }
+
         int unit = Integer.parseInt(props.getProperty("unit"));
         String consumerKey;
         String consumerSecret;

@@ -28,6 +28,7 @@ public class HoseReader {
 
         StatusesSampleEndpoint endpoint = new StatusesSampleEndpoint();
         endpoint.stallWarnings(false);
+        endpoint.filterLevel(Constants.FilterLevel.Medium);
 
 
         Authentication auth = new OAuth1(consumerKey, consumerSecret, token, tokenSecret);

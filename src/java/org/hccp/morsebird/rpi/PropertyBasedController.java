@@ -1,8 +1,7 @@
 package org.hccp.morsebird.rpi;
 
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.Properties;
 
 /**
@@ -27,12 +26,20 @@ public class PropertyBasedController {
         }
     }
 
-    public static InputStream getPropertyInputStream() {
+    public static InputStream getPropertyInputStream() throws FileNotFoundException {
         Class clazz = PropertyBasedController.class.getClass().getClass();
-        return clazz.getResourceAsStream("/morsebird.properties");
+
+        InputStream resourceAsStream = clazz.getResourceAsStream("/morsebird.properties");
+        if (resourceAsStream != null) {
+            return resourceAsStream;
+        } else {
+            String propsFile=System.getProperty("morsebird.properties.file");
+            return new FileInputStream(new File(propsFile));
+        }
+
     }
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) throws InterruptedException, FileNotFoundException {
 
         Object inputStream = getPropertyInputStream();
         System.out.println("inputStream = " + inputStream);

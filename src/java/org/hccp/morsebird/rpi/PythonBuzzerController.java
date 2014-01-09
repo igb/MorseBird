@@ -20,7 +20,7 @@ public class PythonBuzzerController extends AbstractSignalController {
     private PrintStream controlOutput;
 
 
-    public PythonBuzzerController() throws IOException {
+    public PythonBuzzerController() throws IOException, InterruptedException {
 
         pin = Integer.parseInt(properties.getProperty("buzzer.pin"));
         String buzzerController = properties.getProperty("buzzer.control.executable");
@@ -30,12 +30,45 @@ public class PythonBuzzerController extends AbstractSignalController {
         Process buzzProc = rt.exec(cmd);
         OutputStream os = buzzProc.getOutputStream();
         controlOutput = new PrintStream(os);
-        InputStream is = buzzProc.getErrorStream();
+        final InputStream err = buzzProc.getErrorStream();
+        final InputStream is = buzzProc.getInputStream();
 
-        for (int x = 0; x != -1; x = is.read() ){
-            System.out.print((char)x);
-            System.out.flush();
-        }
+        Thread x = new Thread(){
+            public void run() {
+                   try {
+                    for (int x = 0; x != -1; x = is.read() ){
+                        System.out.print((char)x);
+                        System.out.flush();
+                    }
+                   } catch (IOException e) {
+                       e.printStackTrace();
+                   }
+
+                    System.out.flush();
+            }
+
+        };
+        x.start();
+
+        Thread y = new Thread(){
+            public void run() {
+                try {
+                    for (int x = 0; x != -1; x = err.read() ){
+                        System.out.print((char)x);
+                        System.out.flush();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                System.out.flush();
+            }
+
+        };
+        y.start();
+
+
+        System.out.println("done");
 
 
     }
@@ -48,6 +81,8 @@ public class PythonBuzzerController extends AbstractSignalController {
 
     @Override
     protected void on() throws InterruptedException, IOException {
-        controlOutput.print(pitch + " " + unitInMillis / 1000);
+        System.out.println(unitInMillis / 1000);
+        controlOutput.println(pitch + " " + (unitInMillis / 1000));
+        controlOutput.flush();
     }
 }
